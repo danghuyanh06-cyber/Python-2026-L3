@@ -1,8 +1,0 @@
-range1 = list(range(7))
-range2 = list(range(1, 11, 3))
-range3 = list(range(5, 0, -1))
-range4 = list(range(6, -3, -2))
-print("range", range1)
-print("range", range2)  
-print("range", range3)
-print("range", range4)
