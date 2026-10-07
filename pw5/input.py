@@ -13,9 +13,9 @@ def add_students(stdscreen, students):
             stdscreen.clear()
             stdscreen.addstr(f"Student {i + 1}\nStudent ID: ")
             sid = stdscreen.getstr().decode('utf-8')
-            stdscreen.addstr("Enter Name: ")
+            stdscreen.addstr("Enter Student Name: ")
             name = stdscreen.getstr().decode('utf-8')
-            stdscreen.addstr("Enter DOB: ")
+            stdscreen.addstr("Enter Student Date of Birth (YYYY-MM-DD): ")
             dob = stdscreen.getstr().decode('utf-8')
             students.append(Student(sid, name, dob))
     except ValueError:
