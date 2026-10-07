@@ -1,26 +1,70 @@
 import curses
 import os
 import zipfile
+from domains.student import Student
+from domains.course import Course
 from input import add_students, add_courses, add_marks
 from output import show_marks, show_students, show_courses, calculate_GPA_and_short
 
 def save_data(students, courses):
-    with open("data.txt", "w", encoding="utf-8") as f:
-        for student in students:
-            marks_str = str(student.marks)
-            f.write(f"student|{student.id}|{student.name}|{student.dob}|{marks_str}\n")
-        for course in courses:
-            f.write(f"course|{course.course_id}|{course.course_name}|{course.credit}\n")
-
+    with open("students.txt", "w", encoding="utf-8") as f:
+        for s in students:
+            f.write(f"{s.id}|{s.name}|{s.dob}\n")
+            
+    with open("courses.txt", "w", encoding="utf-8") as f:
+        for c in courses:
+            f.write(f"{c.course_id}|{c.course_name}|{c.credit}\n")
+            
+    with open("marks.txt", "w", encoding="utf-8") as f:
+        for s in students:
+            for cid, mark in s.marks.items():
+                f.write(f"{s.id}|{cid}|{mark}\n")
     with zipfile.ZipFile("students.dat", "w", zipfile.ZIP_DEFLATED) as zipf:
-        zipf.write("data.txt")
+        zipf.write("students.txt")
+        zipf.write("courses.txt")
+        zipf.write("marks.txt")
+    for file in ["students.txt", "courses.txt", "marks.txt"]:
+        if os.path.exists(file):
+            os.remove(file)
 
-    if os.path.exists("data.txt"):
-        os.remove("data.txt")
-        
-def main(stdscreen):
+def load_data():
     students = []
     courses = []
+    if os.path.exists("students.dat"):
+        try:
+            with zipfile.ZipFile("students.dat", "r") as zipf:
+                zipf.extractall()
+            if os.path.exists("students.txt"):
+                with open("students.txt", "r", encoding="utf-8") as f:
+                    for line in f:
+                        parts = line.strip().split('|')
+                        if len(parts) == 3:
+                            students.append(Student(parts[0], parts[1], parts[2]))                           
+            if os.path.exists("courses.txt"):
+                with open("courses.txt", "r", encoding="utf-8") as f:
+                    for line in f:
+                        parts = line.strip().split('|')
+                        if len(parts) == 3:
+                            courses.append(Course(parts[0], parts[1], int(parts[2])))             
+            if os.path.exists("marks.txt"):
+                with open("marks.txt", "r", encoding="utf-8") as f:
+                    for line in f:
+                        parts = line.strip().split('|')
+                        if len(parts) == 3:
+                            sid, cid, mark = parts[0], parts[1], float(parts[2])
+                            for s in students:
+                                if s.id == sid:
+                                    s.marks[cid] = mark
+            for file in ["students.txt", "courses.txt", "marks.txt"]:
+                if os.path.exists(file):
+                    os.remove(file)
+        except Exception:
+            pass
+            
+    return students, courses
+        
+def main(stdscreen):
+    students, courses = load_data()
     while True:
         stdscreen.clear()
         stdscreen.addstr("University Management System\n", curses.A_BOLD)
