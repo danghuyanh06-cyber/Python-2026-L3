@@ -1,0 +1,4 @@
+student|1|1|1|{'CS': 10.0, 'PY': 6.0}
+student|2|2|2|{'CS': 5.0, 'PY': 3.0}
+course|CS|cyber|4
+course|PY|Python|4
