@@ -10,7 +10,6 @@ def save_data(students, courses):
     with open("students.txt", "w", encoding="utf-8") as f:
         for s in students:
             f.write(f"{s.id}|{s.name}|{s.dob}\n")
-            
     with open("courses.txt", "w", encoding="utf-8") as f:
         for c in courses:
             f.write(f"{c.course_id}|{c.course_name}|{c.credit}\n")

@@ -1,0 +1,16 @@
+import pandas as pd
+df_scores = pd.read_csv("scores.csv")
+df_student = pd.read_csv("students.csv")
+
+print("Missing values in scores.csv:")
+print(df_scores.isnull().sum())
+print("\nMissing values in students.csv:")
+print(df_student.isnull().sum())
+df_scores.fillna(df_scores.mean(numeric_only=True), inplace=True)
+df_student.fillna(df_student.mean(numeric_only=True), inplace=True)
+merged_df = pd.merge(df_student, df_scores, on="student_id", how="left")
+merged_df['average_score'] = merged_df[['python', 'math', 'database']].mean(axis=1)
+top_5_students = merged_df.sort_values(by='average_score', ascending=False).head(5)
+print("Top five students with the highest average scores:\n", top_5_students[['name', 'average_score']])
+avg_score_by_major = merged_df.groupby('major')['average_score'].mean()
+print("Average scores by major:\n", avg_score_by_major)
